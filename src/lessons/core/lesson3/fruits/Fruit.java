@@ -1,0 +1,15 @@
+package lessons.core.lesson3.fruits;
+
+public abstract class Fruit {
+    private String name;
+    private float weight;
+
+    public Fruit(String name, float weight){
+        this.name = name;
+        this.weight = weight;
+    }
+
+    public float getWeight() {
+        return weight;
+    }
+}
