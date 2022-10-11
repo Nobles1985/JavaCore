@@ -11,12 +11,4 @@ public class AppData {
     public void setData(int[][] data) {
         this.data = data;
     }
-
-    public String[] getHeader() {
-        return header;
-    }
-
-    public int[][] getData() {
-        return data;
-    }
 }

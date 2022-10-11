@@ -16,15 +16,11 @@ public class ValueFile {
         this.info9 = info9;
     }
 
-    public Integer getInfo1() {
-        return info1;
-    }
+    public Integer getInfo1() { return info1; }
 
     public Integer getInfo2() { return info2; }
 
-    public Integer getInfo3() {
-        return info3;
-    }
+    public Integer getInfo3() { return info3; }
 
     public Integer getInfo4() { return info4; }
 

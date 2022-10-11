@@ -21,12 +21,14 @@ public class MultiplicationTable {
         AppData data = readFromFile();
     }
 
+// Запись в коллекцию таблицы умножения
     public static void table(){
         for(Integer i = 1; i < 10; i++){
             file.add(new ValueFile(i, i*2, i*3, i*4, i*5, i*6, i*7, i*8, i*9));
         }
     }
 
+// Запись в файл table.csv заголовка таблицы и саму таблицу
     public static void writeToFile() throws IOException {
         try(FileWriter writer = new FileWriter(path)){
             writer.write(info);
@@ -40,6 +42,7 @@ public class MultiplicationTable {
         }
     }
 
+// Считывание данных из файла.
     public static AppData readFromFile() throws IOException {
         AppData data = new AppData();
         List<List<String>> array = new ArrayList<>();
