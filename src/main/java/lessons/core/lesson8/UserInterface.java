@@ -9,14 +9,23 @@ public class UserInterface {
     public void runApplication() {
         Scanner sc = new Scanner(System.in);
         while(true){
-            System.out.println("Введите название города на русском языке");
-            String city = sc.nextLine();
-            setCity(city);
+            String choice = null;
+            do{
             System.out.println("Введите: 1 - Получить погоду на 1 день, " +
                     "2 - Получить погоду на следующие 5 дней, " + "3 - получить данные из базы данных, " +
                     "выход (exit) - завершить работу");
-            String choice = sc.nextLine();
+            choice = sc.nextLine();
             checkIsExit(choice);
+            if (choice.equals("3")){
+                try {
+                    notifyController(choice);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }} while (choice.equals("3"));
+            System.out.println("Введите название города на русском языке");
+            String city = sc.nextLine();
+            setCity(city);
             try {
                 validateUserInput(choice);
             } catch (IOException e) {

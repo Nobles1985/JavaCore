@@ -5,12 +5,12 @@ public class WeatherData {
     private String city;
     private String date;
     private String weatherType;
-    private Integer temperature;
+    private Double temperature;
 
     public WeatherData(){
     }
 
-    public WeatherData(String city, String date, String weatherType, Integer temperature){
+    public WeatherData(String city, String date, String weatherType, Double temperature){
         this.city = city;
         this.date = date;
         this.weatherType = weatherType;
@@ -41,11 +41,16 @@ public class WeatherData {
         this.weatherType = weatherType;
     }
 
-    public Integer getTemperature() {
+    public Double getTemperature() {
         return temperature;
     }
 
-    public void setTemperature(Integer temperature) {
+    public void setTemperature(Double temperature) {
         this.temperature = temperature;
+    }
+
+    public String toGetWeather (){
+        String str = city + " " + date + " " + weatherType + " " + Double.toString(temperature) + " градусов";
+        return str;
     }
 }

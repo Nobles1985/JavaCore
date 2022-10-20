@@ -22,12 +22,12 @@ public class YandexWeather implements WeatherProvider {
     private static final String FORECAST_ENDPOINT = "forecast";
     private final OkHttpClient client = new OkHttpClient();
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private DatabaseRepoSqlLite baseData = new DatabaseRepoSqlLite();
 
     public ArrayList<WeatherData> getWeather(Periods periods) throws IOException {
         ArrayList<WeatherData> data = new ArrayList<>();
         String city = detectCity();
         String[] cityChoice = city.split(" ");
-        DatabaseRepoSqlLite baseData = new DatabaseRepoSqlLite();
         if(periods.equals(Periods.ONE_DAY)){
             HttpUrl url = new HttpUrl
                     .Builder()
@@ -66,13 +66,13 @@ public class YandexWeather implements WeatherProvider {
                 String[] dateIs = date.split("-");
                 System.out.println("В городе " + town + " на " + dateIs[2] + "." + dateIs[1] + "." + dateIs[0] +
                                 " ожидается погода: " + weatherType(info) + " , температура: " + temperature + " градусов.");
-                data.add(new WeatherData(town, dateIs[2] + "." + dateIs[1] + "." + dateIs[0], weatherType(info), Integer.valueOf(temperature)));
+                data.add(new WeatherData(town, dateIs[2] + "." + dateIs[1] + "." + dateIs[0], weatherType(info), Double.valueOf(temperature)));
                 try{
                     baseData.saveWeatherData(data);
                 } catch (SQLException e){
                     e.printStackTrace();
                 }
-            } else throw new IOException("Server returns 0 cities");
+            } else throw new IOException("Сервер не нашел указанный город");
 
         } else if(periods.equals(Periods.FIVE_DAYS)){
             HttpUrl url = new HttpUrl
@@ -113,7 +113,7 @@ public class YandexWeather implements WeatherProvider {
                     String[] dateIs = date.split("-");
                     System.out.println("В городе " + town + " на дату " + dateIs[2] + "." + dateIs[1] + "." + dateIs[0] +
                         " ожидается погода: " + weatherType(info) + " , температура: " + temperature + " градусов.");
-                    data.add(new WeatherData(town, dateIs[2] + "." + dateIs[1] + "." + dateIs[0], weatherType(info), Integer.valueOf(temperature)));
+                    data.add(new WeatherData(town, dateIs[2] + "." + dateIs[1] + "." + dateIs[0], weatherType(info), Double.valueOf(temperature)));
                 }
                 try{
                     baseData.saveWeatherData(data);
@@ -125,8 +125,14 @@ public class YandexWeather implements WeatherProvider {
         return data;
     }
 
-    public WeatherData getAllFromDb() throws IOException {
-        return null;
+    public void getAllFromDb() throws IOException {
+        try{
+            for(int i = 0; i < baseData.getAllSaveData().size(); i++){
+                System.out.println(baseData.getAllSaveData().get(i).toGetWeather());
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
     }
 
     public String detectCity() throws IOException{

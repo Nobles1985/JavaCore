@@ -3,7 +3,6 @@ package lessons.core.lesson8;
 import lessons.core.lesson8.interfaces.DatabaseRepository;
 import lessons.core.lesson8.sabclass.WeatherData;
 
-import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,10 +19,12 @@ public class DatabaseRepoSqlLite implements DatabaseRepository {
 
     String filename = null;
     String createTableQuery = "CREATE TABLE IF NOT EXISTS weather (\nid INTEGER PRIMARY KEY AUTOINCREMENT," +
-            "\ncity TEXT NOT NULL,\ndate_time TEXT NOT NULL,\nweather_text TEXT NOT NULL," +
-            "\ntemperature INTEGER NOT NULL\n);";
+            "\ncity TEXT NOT NULL,\ndate TEXT NOT NULL,\nweather_type TEXT NOT NULL," +
+            "\ntemperature REAL NOT NULL\n);";
 
-    String insertWeatherQuery = "INSERT INTO weather (city, date_time, weather_text, temperature) VALUES";
+    String insertWeatherQuery = "INSERT INTO weather (city, date, weather_type, temperature) VALUES (?, ?, ?, ?)";
+
+    String getWeatherQuery = "SELECT * FROM weather";
 
     public DatabaseRepoSqlLite () {
         filename = AppGlobalState.getInstance().getFileDb();
@@ -43,21 +44,31 @@ public class DatabaseRepoSqlLite implements DatabaseRepository {
         }
     }
 
-    public void saveWeatherData(ArrayList<WeatherData> array) throws SQLException {
-        for(int i = 0; i < array.size(); i++) {
-            try {
-                Connection conn = getConnection();
-                Statement st = conn.createStatement();
-                st.executeUpdate(insertWeatherQuery + " ('" + array.get(i).getCity() + "', '" +
-                        array.get(i).getDate() + "', '" + array.get(i).getWeatherType() +
-                        "', " + array.get(i).getTemperature() + ");");
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
+    public void saveWeatherData(ArrayList<WeatherData> array) throws SQLException{
+        try (Connection conn = getConnection()){
+            for (int i = 0; i < array.size(); i++){
+                PreparedStatement preparedStatement = conn.prepareStatement(insertWeatherQuery);
+                preparedStatement.setString(1, array.get(i).getCity());
+                preparedStatement.setString(2, array.get(i).getDate());
+                preparedStatement.setString(3, array.get(i).getWeatherType());
+                preparedStatement.setDouble(4, array.get(i).getTemperature());
+                preparedStatement.executeUpdate();
             }
         }
     }
 
-    public List<WeatherData> getAllSaveData() throws IOException {
-        return null;
+    public List<WeatherData> getAllSaveData() throws SQLException{
+        List<WeatherData> data = new ArrayList<>();
+        Connection conn = getConnection();
+        PreparedStatement preparedStatement = conn.prepareStatement(getWeatherQuery);
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while(resultSet.next()){
+            String city = resultSet.getString("city");
+            String date = resultSet.getString("date");
+            String weatherType = resultSet.getString("weather_type");
+            Double temperature = resultSet.getDouble("temperature");
+            data.add(new WeatherData(city,date, weatherType, temperature));
+        }
+        return data;
     }
 }

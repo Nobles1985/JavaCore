@@ -8,5 +8,5 @@ import java.util.ArrayList;
 
 public interface WeatherProvider {
     ArrayList<WeatherData> getWeather(Periods periods) throws IOException;
-    WeatherData getAllFromDb() throws IOException;
+    void getAllFromDb() throws IOException;
 }

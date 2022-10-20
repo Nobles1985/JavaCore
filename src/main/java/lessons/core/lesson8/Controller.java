@@ -5,6 +5,7 @@ import lessons.core.lesson8.enums.Periods;
 import lessons.core.lesson8.interfaces.WeatherProvider;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
